@@ -1,4 +1,5 @@
 'use client'
+import PassiveStudyTracker from '@/app/components/PassiveStudyTracker'
 
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -85,6 +86,7 @@ export default function LabDetailPage() {
 
   return (
     <main className="pageShell narrow">
+      <PassiveStudyTracker source="lab" />
       <div className="breadcrumb"><Link href="/">Engineer OS</Link> / <Link href="/labs">Labs</Link> / {lab.title}</div>
       <span className="eyebrow">HANDS-ON · 約{lab.estimated_minutes}分</span>
       <h1>{lab.title}</h1>

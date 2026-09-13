@@ -80,7 +80,7 @@ export default function SettingsPage() {
   return (
     <main className="pageShell narrow">
       <div className="breadcrumb"><Link href="/">Engineer OS</Link> / Settings</div>
-      <div className="eyebrow">V1.0 PRODUCT SETTINGS</div>
+      <div className="eyebrow">V1.1 PRODUCT SETTINGS</div>
       <h1>設定</h1>
       <p className="mutedText">日々の学習負荷と端末体験を調整します。ログイン時はSupabaseへ同期します。</p>
 
@@ -90,7 +90,7 @@ export default function SettingsPage() {
 
         <label>リマインド時刻</label>
         <input type="time" value={settings.reminder_time} onChange={e => setSettings(prev => ({ ...prev, reminder_time: e.target.value }))} />
-        <small>ブラウザ通知の完全な時刻指定Pushは、将来サーバーPushを接続するとさらに強化できます。v1.0では通知権限・テスト通知・アプリ内リマインド設定を提供します。</small>
+        <small>ブラウザ通知の完全な時刻指定Pushは、将来サーバーPushを接続するとさらに強化できます。v1.1では通知権限・テスト通知・アプリ内リマインド設定を提供します。</small>
 
         <label className="toggleRow">
           <input type="checkbox" checked={settings.notifications_enabled} onChange={e => setSettings(prev => ({ ...prev, notifications_enabled: e.target.checked }))} />

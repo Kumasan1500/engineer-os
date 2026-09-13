@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata, Viewport } from 'next'
 import PWAClient from '@/app/components/PWAClient'
 import AppErrorBoundary from '@/app/components/AppErrorBoundary'
+import MobileNav from '@/app/components/MobileNav'
 
 export const metadata: Metadata = {
   title: { default: 'Engineer OS', template: '%s | Engineer OS' },
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <PWAClient />
         <AppErrorBoundary>{children}</AppErrorBoundary>
+        <MobileNav />
       </body>
     </html>
   )

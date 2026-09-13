@@ -222,6 +222,11 @@ export default function Home() {
           <AuthStatus />
         </div>
       </header>
+      <section className="mobileSnapshot" aria-label="今日のサマリー">
+        <div><span>Progress</span><b>{totalProgress}%</b></div>
+        <div><span>Mastery</span><b>{totalMastery}%</b></div>
+        <div><span>Today</span><b>{Math.round(todayStudySeconds / 60)}m</b></div>
+      </section>
 
       <section className="metricGrid metricGridThree">
         <div className="panel metricCard">
@@ -277,7 +282,7 @@ export default function Home() {
         )}
       </section>
 
-      <section>
+      <section id="learning-path">
         <div className="sectionTitle"><h2>現在の重点分野</h2><span>{skills.length} domains</span></div>
         <div className="domainList">
           {skills.map(skill => {

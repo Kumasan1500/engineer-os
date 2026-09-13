@@ -148,6 +148,13 @@ export default function LearningPage() {
   const scrollYRef = useRef(0)
   const answersRef = useRef<Record<number, string>>({})
   const questionsRef = useRef<Question[]>([])
+  const lessonSecondsRef = useRef(0)
+  const quizSecondsRef = useRef(0)
+  const reviewSecondsRef = useRef(0)
+  const interactionCountRef = useRef(0)
+  const lastInteractionAtRef = useRef(Date.now())
+  const phaseRef = useRef<'lesson' | 'quiz' | 'review'>('lesson')
+  const deviceSessionIdRef = useRef<string>('')
 
   useEffect(() => { answersRef.current = answers }, [answers])
   useEffect(() => { submittedRef.current = submitted }, [submitted])
@@ -227,9 +234,20 @@ export default function LearningPage() {
       })
 
       if (userData.user) {
+        const deviceSessionId = typeof crypto !== 'undefined' && 'randomUUID' in crypto
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2)}`
+        deviceSessionIdRef.current = deviceSessionId
+        const deviceType = /iPhone|iPad|Android/i.test(navigator.userAgent) ? 'mobile' : 'desktop'
         const { data: session } = await supabase
           .from('study_sessions')
-          .insert({ user_id: userData.user.id, unit_id: unitData.id, source: 'lesson' })
+          .insert({
+            user_id: userData.user.id,
+            unit_id: unitData.id,
+            source: 'lesson',
+            device_session_id: deviceSessionId,
+            device_type: deviceType,
+          })
           .select('id')
           .single<{ id: number }>()
         sessionIdRef.current = session?.id ?? null
@@ -240,9 +258,21 @@ export default function LearningPage() {
   }, [slug])
 
   useEffect(() => {
-    const onScroll = () => { scrollYRef.current = Math.round(window.scrollY) }
+    const markActive = () => {
+      lastInteractionAtRef.current = Date.now()
+      interactionCountRef.current += 1
+    }
+    const onScroll = () => {
+      scrollYRef.current = Math.round(window.scrollY)
+      markActive()
+    }
+    const events: Array<keyof WindowEventMap> = ['pointerdown', 'keydown', 'touchstart']
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    events.forEach(event => window.addEventListener(event, markActive, { passive: true } as AddEventListenerOptions))
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      events.forEach(event => window.removeEventListener(event, markActive))
+    }
   }, [])
 
   useEffect(() => {
@@ -263,24 +293,34 @@ export default function LearningPage() {
     }
 
     const heartbeat = window.setInterval(async () => {
-      if (document.visibilityState !== 'visible') return
-      activeSecondsRef.current += HEARTBEAT_SECONDS
-      setActiveSeconds(activeSecondsRef.current)
+      const idleMs = Date.now() - lastInteractionAtRef.current
+      const isActive = document.visibilityState === 'visible' && idleMs <= 90_000
+      if (isActive) {
+        activeSecondsRef.current += HEARTBEAT_SECONDS
+        if (phaseRef.current === 'lesson') lessonSecondsRef.current += HEARTBEAT_SECONDS
+        if (phaseRef.current === 'quiz') quizSecondsRef.current += HEARTBEAT_SECONDS
+        if (phaseRef.current === 'review') reviewSecondsRef.current += HEARTBEAT_SECONDS
+        setActiveSeconds(activeSecondsRef.current)
+      }
       if (sessionIdRef.current) {
         await supabase
           .from('study_sessions')
           .update({
             active_seconds: activeSecondsRef.current,
+            lesson_seconds: lessonSecondsRef.current,
+            quiz_seconds: quizSecondsRef.current,
+            review_seconds: reviewSecondsRef.current,
+            interaction_count: interactionCountRef.current,
             last_active_at: new Date().toISOString(),
           })
           .eq('id', sessionIdRef.current)
       }
-      await saveDraft()
+      if (isActive) await saveDraft()
     }, HEARTBEAT_SECONDS * 1000)
 
     const beforeUnload = () => {
       if (sessionIdRef.current) {
-        void supabase.from('study_sessions').update({ ended_at: new Date().toISOString(), last_active_at: new Date().toISOString() }).eq('id', sessionIdRef.current)
+        void supabase.from('study_sessions').update({ ended_at: new Date().toISOString(), last_active_at: new Date().toISOString(), active_seconds: activeSecondsRef.current, lesson_seconds: lessonSecondsRef.current, quiz_seconds: quizSecondsRef.current, review_seconds: reviewSecondsRef.current, interaction_count: interactionCountRef.current }).eq('id', sessionIdRef.current)
       }
     }
     window.addEventListener('beforeunload', beforeUnload)
@@ -290,7 +330,7 @@ export default function LearningPage() {
       window.removeEventListener('beforeunload', beforeUnload)
       void saveDraft()
       if (sessionIdRef.current) {
-        void supabase.from('study_sessions').update({ ended_at: new Date().toISOString(), last_active_at: new Date().toISOString() }).eq('id', sessionIdRef.current)
+        void supabase.from('study_sessions').update({ ended_at: new Date().toISOString(), last_active_at: new Date().toISOString(), active_seconds: activeSecondsRef.current, lesson_seconds: lessonSecondsRef.current, quiz_seconds: quizSecondsRef.current, review_seconds: reviewSecondsRef.current, interaction_count: interactionCountRef.current }).eq('id', sessionIdRef.current)
       }
     }
   }, [user, unit, loading])
@@ -321,6 +361,8 @@ export default function LearningPage() {
   const unitPositionPct = Math.round((unitMeta.index / Math.max(unitMeta.total, 1)) * 100)
 
   const submitQuiz = async () => {
+    phaseRef.current = 'review'
+    lastInteractionAtRef.current = Date.now()
     setSubmitted(true)
     setSaveMessage('')
     if (!unit || !user || questions.length === 0) {
@@ -416,6 +458,8 @@ export default function LearningPage() {
   }
 
   const retryQuiz = () => {
+    phaseRef.current = 'quiz'
+    lastInteractionAtRef.current = Date.now()
     setAnswers({})
     setSubmitted(false)
     setSaveMessage('')
@@ -448,7 +492,7 @@ export default function LearningPage() {
             </div>
             <div className="autosaveLine">
               <span>{draftStatus === 'saving' ? '保存中…' : draftStatus === 'saved' ? '✓ 自動保存済み' : '途中保存ON'}</span>
-              <span>学習時間 {Math.floor(activeSeconds / 60)}分</span>
+              <span>実学習 {Math.floor(activeSeconds / 60)}分</span>
             </div>
           </>
         )}
@@ -500,7 +544,7 @@ export default function LearningPage() {
                     value={choice}
                     disabled={submitted}
                     checked={answers[question.id] === choice}
-                    onChange={() => setAnswers(prev => ({ ...prev, [question.id]: choice }))}
+                    onChange={() => { phaseRef.current = 'quiz'; lastInteractionAtRef.current = Date.now(); setAnswers(prev => ({ ...prev, [question.id]: choice })) }}
                   />
                   <span>{choice}</span>
                 </label>

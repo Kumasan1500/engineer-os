@@ -1,4 +1,5 @@
 'use client'
+import PassiveStudyTracker from '@/app/components/PassiveStudyTracker'
 
 import Link from 'next/link'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -132,6 +133,7 @@ export default function FoundationMockPage() {
   if (!started) {
     return (
       <main className="pageShell narrow">
+        <PassiveStudyTracker source="mock" />
         <div className="breadcrumb"><Link href="/">Engineer OS</Link> / <Link href="/readiness">Readiness</Link> / Mock</div>
         <span className="eyebrow">EXAM MODE</span>
         <h1>{exam.name}</h1>
@@ -149,6 +151,7 @@ export default function FoundationMockPage() {
 
   return (
     <main className="pageShell narrow">
+      <PassiveStudyTracker source="mock" />
       <div className="mockSticky panel"><div><span className="eyebrow">TIME LEFT</span><b className={timeLeft < 300 ? 'dangerTime' : ''}>{formatTime(timeLeft)}</b></div><div><span className="eyebrow">ANSWERED</span><b>{answered}/{questions.length}</b></div></div>
       <div className="breadcrumb"><Link href="/">Engineer OS</Link> / Foundation Mock</div>
       <h1>{exam.name}</h1>
