@@ -1,0 +1,23 @@
+{
+  "name": "Engineer OS",
+  "short_name": "Engineer OS",
+  "description": "技術・資格・実務・キャリアを一体管理するエンジニア成長OS",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "categories": ["education", "productivity", "developer"],
+  "icons": [
+    {"src":"/icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"/icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
+  ],
+  "shortcuts": [
+    {"name":"今日のミッション","short_name":"Mission","url":"/"},
+    {"name":"資格・実践","short_name":"Readiness","url":"/readiness"},
+    {"name":"Career OS","short_name":"Career","url":"/career"},
+    {"name":"Tech Radar","short_name":"Radar","url":"/tech-radar"}
+  ]
+}

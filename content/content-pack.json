@@ -1,0 +1,1055 @@
+{
+  "version": "2026.09-foundation-1",
+  "skills": [
+    {
+      "slug": "computer-fundamentals",
+      "name": "Computer Fundamentals",
+      "category": "Foundation",
+      "description": "CPU、メモリ、OS、プロセス、ファイルシステムなどの基礎",
+      "sort_order": 10,
+      "units": [
+        {
+          "slug": "cf-001-computer-basics",
+          "title": "コンピュータは何をしているのか",
+          "description": "CPU・メモリ・ストレージ・OSの役割を理解する",
+          "difficulty": 1,
+          "estimated_minutes": 15,
+          "sort_order": 10,
+          "objectives": [
+            "コンピュータを構成する主要な部品を説明できる",
+            "CPU・メモリ・ストレージ・OSの違いを説明できる",
+            "プログラムが動く大まかな流れを理解する"
+          ],
+          "key_points": [
+            "CPUは命令を実行する",
+            "メモリは実行中のデータを一時的に保持する",
+            "ストレージはデータを長期間保存する",
+            "OSはハードウェアとアプリケーションの仲介役になる"
+          ],
+          "lesson_body": "# コンピュータは何をしているのか\n\nコンピュータは簡単に言えば、「データを受け取り、命令に従って処理し、結果を出す機械」です。\n\n## 1. CPU\nCPUはプログラムに書かれた命令を読み取り、計算、比較、データ移動、分岐などを実行します。\n\n## 2. メモリ\nRAMは実行中のプログラムやデータを一時的に保持する高速な作業領域です。電源を切ると基本的に内容は失われます。\n\n## 3. ストレージ\nSSDやHDDはOS、アプリ、写真、コードなどを長期間保存します。RAMより遅い一方、電源を切ってもデータが残ります。\n\n## 4. OS\nWindowsやLinuxなどのOSは、アプリケーションとCPU・メモリ・ストレージ・ネットワークなどのハードウェアの間を管理します。\n\n## 5. プログラムが動く流れ\nアプリはストレージからRAMへ読み込まれ、CPUが命令を実行します。OSはメモリ、ファイル、画面、ネットワークなどの資源を調整します。\n\nこの関係はLinux、AWS、Docker、Kubernetesを理解する土台です。",
+          "questions": [
+            {
+              "content_key": "cf001-q01",
+              "question_type": "multiple_choice",
+              "prompt": "CPUの主な役割はどれですか？",
+              "choices": [
+                "データを長期間保存する",
+                "命令を実行して処理する",
+                "画面だけを表示する",
+                "インターネット回線を提供する"
+              ],
+              "correct_answer": "命令を実行して処理する",
+              "explanation": "CPUはプログラムの命令を読み取り、計算や比較などの処理を実行します。",
+              "difficulty": 1,
+              "tags": [
+                "cpu"
+              ]
+            },
+            {
+              "content_key": "cf001-q02",
+              "question_type": "multiple_choice",
+              "prompt": "RAMの説明として正しいものはどれですか？",
+              "choices": [
+                "実行中のデータを一時的に保持する",
+                "電源を切っても必ず残る",
+                "CPUの代わりに演算する",
+                "ファイル名だけを保存する"
+              ],
+              "correct_answer": "実行中のデータを一時的に保持する",
+              "explanation": "RAMはCPUが現在使うプログラムやデータを一時保持する作業領域です。",
+              "difficulty": 1,
+              "tags": [
+                "memory"
+              ]
+            },
+            {
+              "content_key": "cf001-q03",
+              "question_type": "multiple_choice",
+              "prompt": "SSDやHDDの主な役割はどれですか？",
+              "choices": [
+                "長期的にデータを保存する",
+                "CPUクロックを上げる",
+                "RAMを初期化する",
+                "IPアドレスを割り当てる"
+              ],
+              "correct_answer": "長期的にデータを保存する",
+              "explanation": "ストレージはOSやアプリ、ファイルを電源断後も保持します。",
+              "difficulty": 1,
+              "tags": [
+                "storage"
+              ]
+            },
+            {
+              "content_key": "cf001-q04",
+              "question_type": "multiple_choice",
+              "prompt": "OSの役割として最も適切なのはどれですか？",
+              "choices": [
+                "アプリとハードウェアを仲介する",
+                "SSDの代わりに永久保存する",
+                "CPUを物理的に冷却する",
+                "Webサイトだけを作る"
+              ],
+              "correct_answer": "アプリとハードウェアを仲介する",
+              "explanation": "OSはアプリがCPU、メモリ、ファイル、ネットワーク等を使えるよう管理します。",
+              "difficulty": 1,
+              "tags": [
+                "os"
+              ]
+            },
+            {
+              "content_key": "cf001-q05",
+              "question_type": "multiple_choice",
+              "prompt": "ブラウザを起動するときの流れとして最も自然なのはどれですか？",
+              "choices": [
+                "SSD→RAM→CPUで実行",
+                "CPU→SSD→RAMで永久保存",
+                "RAM→CPU→SSDを削除",
+                "OSを経由せずSSDだけで実行"
+              ],
+              "correct_answer": "SSD→RAM→CPUで実行",
+              "explanation": "保存されている実行ファイル等がRAMへ読み込まれ、CPUが命令を実行します。",
+              "difficulty": 1,
+              "tags": [
+                "execution"
+              ]
+            },
+            {
+              "content_key": "cf001-q06",
+              "question_type": "multiple_choice",
+              "prompt": "電源を切ったとき通常データが失われやすいのはどれですか？",
+              "choices": [
+                "RAM",
+                "SSD",
+                "HDD",
+                "フラッシュメモリ"
+              ],
+              "correct_answer": "RAM",
+              "explanation": "RAMは揮発性メモリで、通常は電源断で内容が失われます。",
+              "difficulty": 1,
+              "tags": [
+                "memory"
+              ]
+            },
+            {
+              "content_key": "cf001-q07",
+              "question_type": "multiple_choice",
+              "prompt": "『アプリをたくさん開いたらPCが重くなった』とき最初に確認候補になりやすいものは？",
+              "choices": [
+                "RAM使用量",
+                "モニターの明るさ",
+                "キーボード配列",
+                "壁紙の種類"
+              ],
+              "correct_answer": "RAM使用量",
+              "explanation": "多数のアプリはRAMを消費するため、メモリ不足が性能低下の原因になることがあります。",
+              "difficulty": 2,
+              "tags": [
+                "troubleshooting",
+                "memory"
+              ]
+            },
+            {
+              "content_key": "cf001-q08",
+              "question_type": "multiple_choice",
+              "prompt": "LinuxとWindowsに共通する分類はどれですか？",
+              "choices": [
+                "OS",
+                "CPU",
+                "SSD",
+                "DNSサーバ"
+              ],
+              "correct_answer": "OS",
+              "explanation": "LinuxとWindowsはいずれもOSです。",
+              "difficulty": 1,
+              "tags": [
+                "os"
+              ]
+            },
+            {
+              "content_key": "cf001-q09",
+              "question_type": "multiple_choice",
+              "prompt": "CPU・RAM・SSDの関係として適切なのはどれですか？",
+              "choices": [
+                "CPUが処理し、RAMが作業領域、SSDが長期保存",
+                "RAMが処理し、CPUが保存、SSDがOS",
+                "SSDが命令実行、CPUが長期保存",
+                "すべて同じ役割"
+              ],
+              "correct_answer": "CPUが処理し、RAMが作業領域、SSDが長期保存",
+              "explanation": "3者の役割を区別することが基礎です。",
+              "difficulty": 1,
+              "tags": [
+                "architecture"
+              ]
+            },
+            {
+              "content_key": "cf001-q10",
+              "question_type": "multiple_choice",
+              "prompt": "サーバを学ぶ前提としてOSの理解が重要な理由は？",
+              "choices": [
+                "アプリやサービスはOS上で資源を使うから",
+                "OSがインターネット料金を決めるから",
+                "OSがCPUを製造するから",
+                "サーバにOSは存在しないから"
+              ],
+              "correct_answer": "アプリやサービスはOS上で資源を使うから",
+              "explanation": "サーバ上のサービスはOSが管理するCPU、メモリ、ファイル、ネットワーク等を利用します。",
+              "difficulty": 2,
+              "tags": [
+                "server",
+                "os"
+              ]
+            }
+          ]
+        },
+        {
+          "slug": "cf-002-cpu-memory",
+          "title": "CPUとメモリ",
+          "description": "CPU、RAM、キャッシュ、処理の流れを理解する",
+          "difficulty": 1,
+          "estimated_minutes": 20,
+          "sort_order": 20,
+          "objectives": [
+            "CPUが命令を実行する装置であることを説明できる",
+            "RAMが一時的な作業領域であることを説明できる",
+            "CPU・キャッシュ・RAM・SSDの違いを整理できる",
+            "メモリ不足がPC動作へ与える影響を説明できる"
+          ],
+          "key_points": [
+            "CPUは命令を実行する",
+            "RAMは実行中のデータを一時保存する",
+            "CPUキャッシュはRAMよりさらに高速で容量が小さい",
+            "SSDはRAMより遅いが電源を切ってもデータが残る",
+            "RAM不足ではページングやswapが増え遅くなりやすい"
+          ],
+          "lesson_body": "# CPUとメモリ\n\n## 1. CPU\nCPUはCentral Processing Unitの略で、プログラムの命令を実行します。性能はクロック周波数だけでなく、世代、設計、コア数、キャッシュ等にも左右されます。\n\n## 2. コアと並列処理\n複数コアがあると複数の処理を同時並行で進めやすくなります。クラウドではvCPUという表現を頻繁に使います。\n\n## 3. RAM\nRAMはCPUが現在利用するプログラムやデータを置く高速な作業領域です。\n\n## 4. CPUキャッシュ\nL1、L2、L3などのキャッシュはRAMより高速で、容量は小さいです。CPUが頻繁に使うデータを近くに置きます。\n\n## 5. メモリ不足\nRAMが不足すると、OSはSSD等を一時的な退避先として使う場合があります。WindowsのページファイルやLinuxのswapが代表例です。ストレージはRAMより遅いため、性能が落ちることがあります。\n\n## 6. 運用で見る指標\nサーバではCPU使用率、メモリ使用量、load、swapなどを観察します。クラウドやコンテナでもCPUとメモリの要求量・制限は重要です。",
+          "questions": [
+            {
+              "content_key": "cf002-q01",
+              "question_type": "multiple_choice",
+              "prompt": "CPUの主な役割は？",
+              "choices": [
+                "命令を実行して処理する",
+                "永久保存する",
+                "IPを配布する",
+                "ファイル名だけを管理する"
+              ],
+              "correct_answer": "命令を実行して処理する",
+              "explanation": "CPUはプログラムの命令を実行します。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf002-q02",
+              "question_type": "multiple_choice",
+              "prompt": "RAMの役割として正しいものは？",
+              "choices": [
+                "実行中データを一時保持する",
+                "永久保存する",
+                "CPUを冷却する",
+                "DNSを管理する"
+              ],
+              "correct_answer": "実行中データを一時保持する",
+              "explanation": "RAMは高速な作業領域です。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf002-q03",
+              "question_type": "multiple_choice",
+              "prompt": "一般的に最も高速なのは？",
+              "choices": [
+                "CPUキャッシュ",
+                "RAM",
+                "SSD",
+                "HDD"
+              ],
+              "correct_answer": "CPUキャッシュ",
+              "explanation": "CPUキャッシュはCPUに最も近く、非常に高速です。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf002-q04",
+              "question_type": "multiple_choice",
+              "prompt": "RAM不足で起こりやすいことは？",
+              "choices": [
+                "PCの処理が遅くなる",
+                "CPUコアが増える",
+                "SSD容量が増える",
+                "ネット速度が必ず上がる"
+              ],
+              "correct_answer": "PCの処理が遅くなる",
+              "explanation": "ページングやswapが増えると低速なストレージアクセスが増えます。",
+              "difficulty": 2,
+              "tags": [
+                "troubleshooting"
+              ]
+            },
+            {
+              "content_key": "cf002-q05",
+              "question_type": "multiple_choice",
+              "prompt": "クラウドでCPUに関連してよく見る用語は？",
+              "choices": [
+                "vCPU",
+                "vDNS",
+                "vSSDOnly",
+                "RAM-IP"
+              ],
+              "correct_answer": "vCPU",
+              "explanation": "仮想CPUリソースをvCPUで表すサービスが多くあります。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf002-q06",
+              "question_type": "multiple_choice",
+              "prompt": "CPUクロックが高ければ必ず全処理で速いと言えない理由は？",
+              "choices": [
+                "設計やコア数、キャッシュ等も性能に影響するから",
+                "クロックは保存容量だから",
+                "クロックはネット速度だから",
+                "CPU性能にクロックは無関係だから"
+              ],
+              "correct_answer": "設計やコア数、キャッシュ等も性能に影響するから",
+              "explanation": "性能は単一の数値だけで決まりません。",
+              "difficulty": 2,
+              "tags": [
+                "cpu"
+              ]
+            },
+            {
+              "content_key": "cf002-q07",
+              "question_type": "multiple_choice",
+              "prompt": "Linuxでディスクを一時的なメモリ退避先として使う仕組みは？",
+              "choices": [
+                "swap",
+                "DNS",
+                "cron",
+                "SSH"
+              ],
+              "correct_answer": "swap",
+              "explanation": "swapはRAM不足時などにメモリページをストレージへ退避する仕組みです。",
+              "difficulty": 2,
+              "tags": [
+                "linux-prereq"
+              ]
+            },
+            {
+              "content_key": "cf002-q08",
+              "question_type": "multiple_choice",
+              "prompt": "16GB RAMで大量の仮想マシンを起動し重くなった。最初に疑うべきは？",
+              "choices": [
+                "メモリ逼迫",
+                "キーボード故障",
+                "DNS TTL",
+                "画面解像度"
+              ],
+              "correct_answer": "メモリ逼迫",
+              "explanation": "仮想マシンは多くのRAMを消費します。",
+              "difficulty": 2,
+              "tags": [
+                "troubleshooting"
+              ]
+            },
+            {
+              "content_key": "cf002-q09",
+              "question_type": "multiple_choice",
+              "prompt": "CPUキャッシュの特徴として適切なのは？",
+              "choices": [
+                "高速だが容量が小さい",
+                "低速で容量が最大",
+                "電源断でも永久保存",
+                "ネットワーク専用"
+              ],
+              "correct_answer": "高速だが容量が小さい",
+              "explanation": "キャッシュは高速性を優先し容量は小さめです。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf002-q10",
+              "question_type": "multiple_choice",
+              "prompt": "サーバ監視でCPU使用率と一緒に見る価値が高いものは？",
+              "choices": [
+                "メモリ使用量",
+                "壁紙",
+                "マウス速度",
+                "フォントサイズ"
+              ],
+              "correct_answer": "メモリ使用量",
+              "explanation": "CPUとメモリは代表的なリソース指標です。",
+              "difficulty": 1,
+              "tags": [
+                "operations"
+              ]
+            }
+          ]
+        },
+        {
+          "slug": "cf-003-storage",
+          "title": "ストレージとファイル",
+          "description": "SSD・HDD・ファイル・ディレクトリ・ファイルシステムを理解する",
+          "difficulty": 1,
+          "estimated_minutes": 25,
+          "sort_order": 30,
+          "objectives": [
+            "SSDとHDDの役割と特徴を説明できる",
+            "ファイルとディレクトリの関係を説明できる",
+            "ファイルシステムの役割を説明できる",
+            "容量不足やI/O問題の初歩的な切り分けができる"
+          ],
+          "key_points": [
+            "ストレージは永続データを保存する",
+            "ファイルはデータの単位、ディレクトリは整理のための階層",
+            "ファイルシステムは保存場所やメタデータを管理する",
+            "空き容量とI/O性能は別の指標",
+            "サーバではログ肥大化が容量不足の典型原因になる"
+          ],
+          "lesson_body": "# ストレージとファイル\n\n## 1. ストレージとは\nSSDやHDDは、OS、アプリ、コード、ログ、データベースなどを長期間保存する装置です。RAMと違い、通常は電源を切っても内容が残ります。\n\n## 2. SSDとHDD\nSSDはフラッシュメモリを使い、ランダムアクセスが速く、衝撃にも比較的強いです。HDDは磁気ディスクを使い、大容量を安価に確保しやすい一方、機械的な動作があり遅延が大きくなりやすいです。\n\n## 3. ファイルとディレクトリ\nファイルはデータのまとまりです。ディレクトリはファイルや別のディレクトリを階層的に整理します。Linuxでは /var/log、/etc、/home など役割ごとのディレクトリが重要になります。\n\n## 4. ファイルシステム\nファイルシステムは、ファイル名、保存場所、サイズ、権限、更新時刻などを管理します。WindowsのNTFS、Linuxのext4やXFSなどが例です。\n\n## 5. 容量とI/O\n『空き容量が多い』ことと『読み書きが速い』ことは別です。ストレージ性能ではIOPS、スループット、レイテンシなども重要です。AWS EBSでもこれらを考えます。\n\n## 6. 容量不足の切り分け\nサーバのディスクが満杯になると、ログが書けない、更新が失敗する、DBが停止するなどの障害につながります。Linuxでは df や du を使い、どのファイルシステム・ディレクトリが容量を消費しているか調べます。\n\n## 7. ログの肥大化\n/var/log などのログが増え続けると容量を圧迫します。logrotateなどで世代管理や圧縮・削除を行う考え方が重要です。",
+          "questions": [
+            {
+              "content_key": "cf003-q01",
+              "question_type": "multiple_choice",
+              "prompt": "ストレージの主な役割は？",
+              "choices": [
+                "データを永続的に保存する",
+                "CPU命令を直接実行する",
+                "IPを配布する",
+                "RAMを冷却する"
+              ],
+              "correct_answer": "データを永続的に保存する",
+              "explanation": "SSD/HDDはOSやファイルを長期間保存します。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf003-q02",
+              "question_type": "multiple_choice",
+              "prompt": "一般にSSDがHDDより得意な点は？",
+              "choices": [
+                "ランダムアクセス速度",
+                "必ず容量が大きい",
+                "必ず価格が安い",
+                "CPU演算"
+              ],
+              "correct_answer": "ランダムアクセス速度",
+              "explanation": "SSDは機械的なヘッド移動がなくランダムアクセスに強い傾向があります。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf003-q03",
+              "question_type": "multiple_choice",
+              "prompt": "ディレクトリの役割は？",
+              "choices": [
+                "ファイルやディレクトリを階層的に整理する",
+                "CPUを増やす",
+                "ネットワークを暗号化する",
+                "RAMを永続化する"
+              ],
+              "correct_answer": "ファイルやディレクトリを階層的に整理する",
+              "explanation": "ディレクトリはファイル構造を整理します。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf003-q04",
+              "question_type": "multiple_choice",
+              "prompt": "ファイルシステムが管理するものとして不適切なのは？",
+              "choices": [
+                "ファイル名",
+                "権限",
+                "更新時刻",
+                "CPUコア数"
+              ],
+              "correct_answer": "CPUコア数",
+              "explanation": "CPUコア数はファイルシステムの管理対象ではありません。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf003-q05",
+              "question_type": "multiple_choice",
+              "prompt": "Linuxでファイルシステムごとの空き容量確認に使う代表コマンドは？",
+              "choices": [
+                "df",
+                "ps",
+                "ping",
+                "curl"
+              ],
+              "correct_answer": "df",
+              "explanation": "dfはファイルシステムの使用量・空き容量確認に使います。",
+              "difficulty": 2,
+              "tags": [
+                "linux-prereq"
+              ]
+            },
+            {
+              "content_key": "cf003-q06",
+              "question_type": "multiple_choice",
+              "prompt": "Linuxで特定ディレクトリ配下の容量を調べる代表コマンドは？",
+              "choices": [
+                "du",
+                "ssh",
+                "top",
+                "ip"
+              ],
+              "correct_answer": "du",
+              "explanation": "duはファイルやディレクトリが消費する容量を調べます。",
+              "difficulty": 2,
+              "tags": [
+                "linux-prereq"
+              ]
+            },
+            {
+              "content_key": "cf003-q07",
+              "question_type": "multiple_choice",
+              "prompt": "サーバのディスク使用率が100%になった。起こり得る影響は？",
+              "choices": [
+                "ログ書き込みや更新処理が失敗する",
+                "CPUコアが増える",
+                "DNSが自動高速化する",
+                "RAMが永久保存化する"
+              ],
+              "correct_answer": "ログ書き込みや更新処理が失敗する",
+              "explanation": "空き容量がないと新規書き込みに失敗し、サービス障害につながります。",
+              "difficulty": 2,
+              "tags": [
+                "troubleshooting"
+              ]
+            },
+            {
+              "content_key": "cf003-q08",
+              "question_type": "multiple_choice",
+              "prompt": "『空き容量が500GBある』だけでは判断できないものは？",
+              "choices": [
+                "I/O性能",
+                "残り容量",
+                "保存可能量の目安",
+                "容量不足リスク"
+              ],
+              "correct_answer": "I/O性能",
+              "explanation": "容量と速度は別指標で、IOPSやレイテンシ等を見る必要があります。",
+              "difficulty": 2,
+              "tags": [
+                "storage-performance"
+              ]
+            },
+            {
+              "content_key": "cf003-q09",
+              "question_type": "multiple_choice",
+              "prompt": "ログが増え続けてディスクを圧迫する対策の考え方として適切なのは？",
+              "choices": [
+                "ローテーションや圧縮、古いログ削除",
+                "ログを無限保存",
+                "RAMを削除",
+                "CPUを停止"
+              ],
+              "correct_answer": "ローテーションや圧縮、古いログ削除",
+              "explanation": "logrotate等でログの世代管理を行います。",
+              "difficulty": 2,
+              "tags": [
+                "operations"
+              ]
+            },
+            {
+              "content_key": "cf003-q10",
+              "question_type": "multiple_choice",
+              "prompt": "AWS EBSを考えるとき容量以外に重要な代表指標は？",
+              "choices": [
+                "IOPSやスループット",
+                "モニター解像度",
+                "キーボード言語",
+                "ブラウザテーマ"
+              ],
+              "correct_answer": "IOPSやスループット",
+              "explanation": "クラウドストレージでは容量に加え性能要件も重要です。",
+              "difficulty": 2,
+              "tags": [
+                "aws-prereq"
+              ]
+            },
+            {
+              "content_key": "cf003-q11",
+              "question_type": "multiple_choice",
+              "prompt": "/var/log が急増しているLinuxサーバで最初に考えることは？",
+              "choices": [
+                "どのログが増えているか容量を確認する",
+                "CPUを交換する",
+                "DNSを削除する",
+                "OSを即再インストールする"
+              ],
+              "correct_answer": "どのログが増えているか容量を確認する",
+              "explanation": "原因ファイルを特定してから対処するのが基本です。",
+              "difficulty": 3,
+              "tags": [
+                "troubleshooting"
+              ]
+            },
+            {
+              "content_key": "cf003-q12",
+              "question_type": "multiple_choice",
+              "prompt": "バックアップとストレージ容量の関係として正しいのは？",
+              "choices": [
+                "バックアップも保存先容量を消費する",
+                "バックアップは容量不要",
+                "バックアップはRAMだけに保存する",
+                "バックアップするとCPUが増える"
+              ],
+              "correct_answer": "バックアップも保存先容量を消費する",
+              "explanation": "バックアップ設計では保存量と世代数を見積もる必要があります。",
+              "difficulty": 2,
+              "tags": [
+                "backup"
+              ]
+            }
+          ]
+        },
+        {
+          "slug": "cf-004-os",
+          "title": "OSとは何か",
+          "description": "Windows・Linux・OSの役割、プロセスとの関係を理解する",
+          "difficulty": 1,
+          "estimated_minutes": 25,
+          "sort_order": 40,
+          "objectives": [
+            "OSが資源管理を行うことを説明できる",
+            "プロセスとサービスの基本を説明できる",
+            "ユーザー・権限・ファイルの関係を説明できる",
+            "Linux学習に必要なOSの基礎用語を理解する"
+          ],
+          "key_points": [
+            "OSはCPU、メモリ、ファイル、デバイス、ネットワーク等を管理する",
+            "実行中のプログラムはプロセスとして扱われる",
+            "バックグラウンドで常駐するサービスがある",
+            "権限管理はOSセキュリティの基礎",
+            "ログは障害調査の重要な証拠"
+          ],
+          "lesson_body": "# OSとは何か\n\n## 1. OSの役割\nOSはハードウェア資源を管理し、アプリケーションへ安全で統一的な利用手段を提供します。CPU時間、メモリ、ファイル、ネットワーク、デバイスなどを調整します。\n\n## 2. カーネル\nOSの中核部分をカーネルと呼びます。プロセス管理、メモリ管理、デバイス制御、システムコールなどの重要機能を担います。\n\n## 3. プロセス\n実行中のプログラムはプロセスとして管理されます。各プロセスにはID、メモリ領域、実行ユーザーなどがあります。Linuxでは ps や top で確認できます。\n\n## 4. サービス\nWebサーバ、SSH、データベースなどはバックグラウンドで継続動作するサービスとして運用されます。Linuxではsystemd環境で systemctl を使うことが多いです。\n\n## 5. ユーザーと権限\nOSはユーザーやグループごとに、ファイルやプロセスへアクセスできる範囲を制御します。『必要最小限の権限』はセキュリティの基本原則です。\n\n## 6. ログ\nOSやサービスは動作状況やエラーをログとして残します。障害時はログ、プロセス、リソース、ネットワークを順序立てて確認します。\n\n## 7. LinuxとWindows\nどちらもOSですが、管理方法や標準ツール、ファイル構造などが異なります。クラウド・サーバ分野ではLinuxを扱う機会が多いため、基礎を重点的に身につけます。",
+          "questions": [
+            {
+              "content_key": "cf004-q01",
+              "question_type": "multiple_choice",
+              "prompt": "OSの主な役割は？",
+              "choices": [
+                "ハードウェア資源を管理しアプリへ提供する",
+                "CPUを製造する",
+                "回線契約を行う",
+                "SSD容量を無限にする"
+              ],
+              "correct_answer": "ハードウェア資源を管理しアプリへ提供する",
+              "explanation": "OSはCPU、メモリ、ファイル、ネットワーク等を管理します。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf004-q02",
+              "question_type": "multiple_choice",
+              "prompt": "OSの中核部分を何と呼びますか？",
+              "choices": [
+                "カーネル",
+                "ブラウザ",
+                "DNS",
+                "リポジトリ"
+              ],
+              "correct_answer": "カーネル",
+              "explanation": "カーネルはプロセスやメモリなどOSの中核機能を担当します。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf004-q03",
+              "question_type": "multiple_choice",
+              "prompt": "実行中のプログラムをOS上で何と呼ぶことが多いですか？",
+              "choices": [
+                "プロセス",
+                "ディレクトリ",
+                "パケット",
+                "サブネット"
+              ],
+              "correct_answer": "プロセス",
+              "explanation": "実行中のプログラムはプロセスとして管理されます。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf004-q04",
+              "question_type": "multiple_choice",
+              "prompt": "Linuxでプロセス確認に使う代表的なコマンドは？",
+              "choices": [
+                "ps",
+                "mkdir",
+                "cd",
+                "cp"
+              ],
+              "correct_answer": "ps",
+              "explanation": "psはプロセス一覧の確認に使います。",
+              "difficulty": 2,
+              "tags": [
+                "linux-prereq"
+              ]
+            },
+            {
+              "content_key": "cf004-q05",
+              "question_type": "multiple_choice",
+              "prompt": "Linuxでサービス管理に使われる代表コマンドは？",
+              "choices": [
+                "systemctl",
+                "pwd",
+                "grepだけ",
+                "touch"
+              ],
+              "correct_answer": "systemctl",
+              "explanation": "systemd環境ではsystemctlでサービスの起動・停止・状態確認を行います。",
+              "difficulty": 2,
+              "tags": [
+                "linux-prereq"
+              ]
+            },
+            {
+              "content_key": "cf004-q06",
+              "question_type": "multiple_choice",
+              "prompt": "必要最小限の権限を与える考え方を何と呼びますか？",
+              "choices": [
+                "最小権限の原則",
+                "最大権限の原則",
+                "無制限アクセス",
+                "公開優先"
+              ],
+              "correct_answer": "最小権限の原則",
+              "explanation": "不要な権限を与えないことはセキュリティの基本です。",
+              "difficulty": 2,
+              "tags": [
+                "security-prereq"
+              ]
+            },
+            {
+              "content_key": "cf004-q07",
+              "question_type": "multiple_choice",
+              "prompt": "サービスが起動しないとき確認価値が高いものは？",
+              "choices": [
+                "ログとサービス状態",
+                "壁紙",
+                "モニターの明るさ",
+                "キーボード配列"
+              ],
+              "correct_answer": "ログとサービス状態",
+              "explanation": "まず状態とログからエラー原因を追います。",
+              "difficulty": 2,
+              "tags": [
+                "troubleshooting"
+              ]
+            },
+            {
+              "content_key": "cf004-q08",
+              "question_type": "multiple_choice",
+              "prompt": "Linuxでrootユーザーが強力な理由は？",
+              "choices": [
+                "広範な管理権限を持つから",
+                "RAM容量が多いから",
+                "CPUが速いから",
+                "IPが固定だから"
+              ],
+              "correct_answer": "広範な管理権限を持つから",
+              "explanation": "rootは多くのシステム操作を行える特権ユーザーです。",
+              "difficulty": 2,
+              "tags": [
+                "security-prereq"
+              ]
+            },
+            {
+              "content_key": "cf004-q09",
+              "question_type": "multiple_choice",
+              "prompt": "Webサーバがバックグラウンドで継続稼働する形として近いものは？",
+              "choices": [
+                "サービス",
+                "画像ファイル",
+                "ディレクトリ",
+                "一時RAMだけ"
+              ],
+              "correct_answer": "サービス",
+              "explanation": "Webサーバ等は常駐サービスとして管理されます。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf004-q10",
+              "question_type": "multiple_choice",
+              "prompt": "OSがプロセスを管理する理由として適切なのは？",
+              "choices": [
+                "CPU時間やメモリ等の資源を調整するため",
+                "ファイル名を英語にするため",
+                "ネット回線料金を決めるため",
+                "SSDを物理製造するため"
+              ],
+              "correct_answer": "CPU時間やメモリ等の資源を調整するため",
+              "explanation": "複数プロセスが資源を安全に共有できるようOSが管理します。",
+              "difficulty": 2,
+              "tags": [
+                "os"
+              ]
+            },
+            {
+              "content_key": "cf004-q11",
+              "question_type": "multiple_choice",
+              "prompt": "障害調査でログが重要な理由は？",
+              "choices": [
+                "エラーや動作履歴の手掛かりが残るから",
+                "必ず原因を自動修復するから",
+                "CPUを増やすから",
+                "権限を無効化するから"
+              ],
+              "correct_answer": "エラーや動作履歴の手掛かりが残るから",
+              "explanation": "ログは時系列の証拠として原因特定に役立ちます。",
+              "difficulty": 2,
+              "tags": [
+                "operations"
+              ]
+            },
+            {
+              "content_key": "cf004-q12",
+              "question_type": "multiple_choice",
+              "prompt": "クラウドでLinux知識が重要な理由として適切なのは？",
+              "choices": [
+                "多くのサーバやコンテナでLinux系環境を扱うため",
+                "Linuxだけがインターネットを使えるため",
+                "AWSはWindowsを禁止しているため",
+                "LinuxはCPUだから"
+              ],
+              "correct_answer": "多くのサーバやコンテナでLinux系環境を扱うため",
+              "explanation": "クラウド・SRE・コンテナ分野ではLinuxの利用機会が多いです。",
+              "difficulty": 2,
+              "tags": [
+                "career"
+              ]
+            }
+          ]
+        },
+        {
+          "slug": "cf-005-client-server",
+          "title": "クライアントとサーバ",
+          "description": "クライアント・サーバ・リクエスト・レスポンスの基本を理解する",
+          "difficulty": 1,
+          "estimated_minutes": 25,
+          "sort_order": 50,
+          "objectives": [
+            "クライアントとサーバの役割を説明できる",
+            "リクエストとレスポンスの流れを説明できる",
+            "Webアクセスの基本的な構成要素を説明できる",
+            "障害時にクライアント側とサーバ側を切り分ける考え方を持つ"
+          ],
+          "key_points": [
+            "クライアントはサービスを要求し、サーバは要求を処理して応答する",
+            "WebではHTTP/HTTPSでリクエストとレスポンスを交換する",
+            "DNSは名前からIPアドレスを調べる",
+            "サーバは複数クライアントへサービスを提供できる",
+            "障害切り分けではどこまで通信できているかを段階的に確認する"
+          ],
+          "lesson_body": "# クライアントとサーバ\n\n## 1. クライアント\nクライアントはサービスを利用する側です。Webブラウザ、スマホアプリ、APIクライアントなどが例です。\n\n## 2. サーバ\nサーバは要求を受け取り、処理し、結果を返す側です。Webサーバ、DBサーバ、DNSサーバなど役割ごとに存在します。\n\n## 3. リクエストとレスポンス\nWebではクライアントがHTTP/HTTPSリクエストを送り、サーバがレスポンスを返します。URL、HTTPメソッド、ヘッダ、本文、ステータスコードなどが関係します。\n\n## 4. DNS\n人間は example.com のような名前を使いますが、通信ではIPアドレスが必要です。DNSは名前からIPアドレス等の情報を引く仕組みです。\n\n## 5. Webアクセスの大まかな流れ\nブラウザにURL入力 → DNSで名前解決 → 対象サーバへ接続 → HTTP/HTTPSリクエスト → サーバ処理 → レスポンス → ブラウザ表示、という流れです。\n\n## 6. 障害切り分け\n『Webサイトが開かない』場合、クライアントのネット接続、DNS、経路、ファイアウォール、サーバプロセス、ポート、アプリ、DBなど複数箇所が原因候補です。闇雲に触るのではなく、通信の流れに沿って段階的に確認します。\n\n## 7. クラウドへの接続\nAWSではクライアント → DNS(Route 53) → Load Balancer → EC2/ECS → Database のような構成を作ります。ここで学ぶクライアント・サーバの考え方がそのまま基礎になります。",
+          "questions": [
+            {
+              "content_key": "cf005-q01",
+              "question_type": "multiple_choice",
+              "prompt": "クライアントの説明として適切なのは？",
+              "choices": [
+                "サービスを要求・利用する側",
+                "必ずデータベースだけを動かす側",
+                "CPUそのもの",
+                "保存装置"
+              ],
+              "correct_answer": "サービスを要求・利用する側",
+              "explanation": "ブラウザやスマホアプリ等はクライアントとしてサーバへ要求を送ります。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf005-q02",
+              "question_type": "multiple_choice",
+              "prompt": "サーバの説明として適切なのは？",
+              "choices": [
+                "要求を受けて処理し応答する側",
+                "必ず人が直接操作する端末",
+                "RAMそのもの",
+                "DNSの別名"
+              ],
+              "correct_answer": "要求を受けて処理し応答する側",
+              "explanation": "サーバはクライアントからの要求に応じてサービスを提供します。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf005-q03",
+              "question_type": "multiple_choice",
+              "prompt": "Web通信でクライアントが送るものは？",
+              "choices": [
+                "HTTP/HTTPSリクエスト",
+                "CPUコア",
+                "SSD容量",
+                "OSライセンス"
+              ],
+              "correct_answer": "HTTP/HTTPSリクエスト",
+              "explanation": "Webではリクエストとレスポンスを交換します。",
+              "difficulty": 1,
+              "tags": []
+            },
+            {
+              "content_key": "cf005-q04",
+              "question_type": "multiple_choice",
+              "prompt": "DNSの役割として適切なのは？",
+              "choices": [
+                "名前からIPアドレス等を調べる",
+                "CPU使用率を下げる",
+                "ファイルを圧縮する",
+                "RAMを増やす"
+              ],
+              "correct_answer": "名前からIPアドレス等を調べる",
+              "explanation": "DNSは名前解決の仕組みです。",
+              "difficulty": 1,
+              "tags": [
+                "network-prereq"
+              ]
+            },
+            {
+              "content_key": "cf005-q05",
+              "question_type": "multiple_choice",
+              "prompt": "ブラウザでURLを開く流れでDNSの次に起こることとして近いのは？",
+              "choices": [
+                "対象IPのサーバへ接続を試みる",
+                "SSDを初期化する",
+                "CPUを交換する",
+                "OSを削除する"
+              ],
+              "correct_answer": "対象IPのサーバへ接続を試みる",
+              "explanation": "名前解決後は宛先へネットワーク接続します。",
+              "difficulty": 2,
+              "tags": [
+                "network-prereq"
+              ]
+            },
+            {
+              "content_key": "cf005-q06",
+              "question_type": "multiple_choice",
+              "prompt": "HTTPステータスコード404の意味として最も近いものは？",
+              "choices": [
+                "要求したリソースが見つからない",
+                "CPUが100%",
+                "DNSが必ず壊れた",
+                "RAM不足"
+              ],
+              "correct_answer": "要求したリソースが見つからない",
+              "explanation": "404はNot Foundを表します。",
+              "difficulty": 2,
+              "tags": [
+                "http-prereq"
+              ]
+            },
+            {
+              "content_key": "cf005-q07",
+              "question_type": "multiple_choice",
+              "prompt": "同じWebサイトが自分のPCだけ開けず他人は開ける。最初に疑う範囲は？",
+              "choices": [
+                "クライアント側の設定やネットワークも含める",
+                "必ずサーバ故障だけ",
+                "必ずDBだけ",
+                "必ずSSD故障"
+              ],
+              "correct_answer": "クライアント側の設定やネットワークも含める",
+              "explanation": "他の利用者が正常ならクライアント固有要因も重要です。",
+              "difficulty": 3,
+              "tags": [
+                "troubleshooting"
+              ]
+            },
+            {
+              "content_key": "cf005-q08",
+              "question_type": "multiple_choice",
+              "prompt": "サーバプロセスが停止している場合に起こり得ることは？",
+              "choices": [
+                "接続はできてもサービス応答が得られない",
+                "DNSが自動修復する",
+                "RAMが永久保存化する",
+                "クライアントCPUが増える"
+              ],
+              "correct_answer": "接続はできてもサービス応答が得られない",
+              "explanation": "ネットワーク到達性があってもアプリサービスが停止していれば正常応答しません。",
+              "difficulty": 3,
+              "tags": [
+                "troubleshooting"
+              ]
+            },
+            {
+              "content_key": "cf005-q09",
+              "question_type": "multiple_choice",
+              "prompt": "AWSの典型的なWeb構成として自然なのは？",
+              "choices": [
+                "Route 53→Load Balancer→EC2/ECS→DB",
+                "RAM→キーボード→SSD→DNS",
+                "CPU→モニター→S3→マウス",
+                "OS→HDD→CPUだけ"
+              ],
+              "correct_answer": "Route 53→Load Balancer→EC2/ECS→DB",
+              "explanation": "DNS、負荷分散、アプリ、DBという層構造がよくあります。",
+              "difficulty": 2,
+              "tags": [
+                "aws-prereq"
+              ]
+            },
+            {
+              "content_key": "cf005-q10",
+              "question_type": "multiple_choice",
+              "prompt": "『Webサイトが開かない』切り分けで良い進め方は？",
+              "choices": [
+                "通信の流れに沿って段階的に確認する",
+                "設定を全部同時に変える",
+                "毎回OSを再インストールする",
+                "原因を決めつける"
+              ],
+              "correct_answer": "通信の流れに沿って段階的に確認する",
+              "explanation": "再現性を保ちつつ層ごとに切り分けるのが基本です。",
+              "difficulty": 2,
+              "tags": [
+                "troubleshooting"
+              ]
+            },
+            {
+              "content_key": "cf005-q11",
+              "question_type": "multiple_choice",
+              "prompt": "HTTPSがHTTPと比べて加える重要な要素は？",
+              "choices": [
+                "通信の暗号化と相手確認",
+                "CPUコア増加",
+                "RAM永久化",
+                "SSD容量増加"
+              ],
+              "correct_answer": "通信の暗号化と相手確認",
+              "explanation": "TLSを使い暗号化や証明書による相手確認を行います。",
+              "difficulty": 2,
+              "tags": [
+                "security-prereq",
+                "network-prereq"
+              ]
+            },
+            {
+              "content_key": "cf005-q12",
+              "question_type": "multiple_choice",
+              "prompt": "サーバが複数クライアントへ同時にサービスを提供する際に重要な観点は？",
+              "choices": [
+                "CPU・メモリ・接続数などの資源",
+                "壁紙",
+                "キーボード言語",
+                "画面の明るさ"
+              ],
+              "correct_answer": "CPU・メモリ・接続数などの資源",
+              "explanation": "同時利用が増えるとサーバ資源やスケーラビリティが重要になります。",
+              "difficulty": 2,
+              "tags": [
+                "scalability"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
