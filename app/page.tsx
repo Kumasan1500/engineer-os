@@ -13,6 +13,8 @@ type Skill = {
   category: string
   description: string | null
   sort_order: number
+  prerequisite_slugs?: string[]
+  level_count?: number
 }
 
 type LearningUnit = {
@@ -24,6 +26,8 @@ type LearningUnit = {
   difficulty: number
   estimated_minutes: number
   sort_order: number
+  level?: number
+  level_label?: string | null
 }
 
 type Progress = {
@@ -143,7 +147,7 @@ export default function Home() {
   const foundationReadiness = useMemo(() => {
     const foundationSkill = skills.find(skill => skill.slug === 'computer-fundamentals')
     if (!foundationSkill) return 0
-    const foundationUnits = units.filter(unit => unit.skill_id === foundationSkill.id)
+    const foundationUnits = units.filter(unit => unit.skill_id === foundationSkill.id && (unit.level ?? 1) === 1)
     if (!foundationUnits.length) return 0
     const completed = foundationUnits.filter(unit => progressMap.get(unit.id)?.status === 'completed').length
     const progressPct = Math.round((completed / foundationUnits.length) * 100)
@@ -159,7 +163,22 @@ export default function Home() {
   const streak = useMemo(() => calculateStreak(sessions), [sessions])
   const dueReviewCount = useMemo(() => progress.filter(item => item.review_due_at && new Date(item.review_due_at).getTime() <= Date.now()).length, [progress])
 
-  const isUnlocked = (unit: LearningUnit, unitIndex: number, skillUnits: LearningUnit[]) => {
+  const skillLevelOneComplete = (skillSlug: string) => {
+    const skill = skills.find(item => item.slug === skillSlug)
+    if (!skill) return false
+    const levelOne = units.filter(unit => unit.skill_id === skill.id && (unit.level ?? 1) === 1)
+    return levelOne.length > 0 && levelOne.every(unit => progressMap.get(unit.id)?.status === 'completed')
+  }
+
+  const isSkillUnlocked = (skill: Skill) => {
+    const prereqs = skill.prerequisite_slugs ?? []
+    if (!prereqs.length) return true
+    if (!user) return false
+    return prereqs.every(skillLevelOneComplete)
+  }
+
+  const isUnlocked = (unit: LearningUnit, unitIndex: number, skillUnits: LearningUnit[], skill?: Skill) => {
+    if (skill && !isSkillUnlocked(skill)) return false
     if (unitIndex === 0) return true
     if (!user) return false
     const previous = skillUnits[unitIndex - 1]
@@ -189,7 +208,7 @@ export default function Home() {
       for (let i = 0; i < skillUnits.length; i += 1) {
         const unit = skillUnits[i]
         if (progressMap.get(unit.id)?.status === 'completed') continue
-        if (isUnlocked(unit, i, skillUnits)) {
+        if (isUnlocked(unit, i, skillUnits, skill)) {
           nextLearning.push({ unit, kind: 'learn', note: '次に進める新規学習', minutes: unit.estimated_minutes })
           break
         }
@@ -310,10 +329,10 @@ export default function Home() {
                   <div className="unitList">
                     {skillUnits.map((unit, index) => {
                       const p = progressMap.get(unit.id)
-                      const unlocked = isUnlocked(unit, index, skillUnits)
+                      const unlocked = isUnlocked(unit, index, skillUnits, skill)
                       const content = (
                         <>
-                          <div><b>{unit.title}</b><small>{unit.estimated_minutes}分 / 難易度 {unit.difficulty}</small></div>
+                          <div><b>{unit.level_label ? `${unit.level_label} · ` : ''}{unit.title}</b><small>{unit.estimated_minutes}分 / 難易度 {unit.difficulty}</small></div>
                           <span className="unitStatus">
                             {p?.status === 'completed' ? <><b>✓ {p.last_score || p.mastery_score}%</b><small>M {p.retention_score ?? 0}%</small></> : unlocked ? '→' : '🔒'}
                           </span>

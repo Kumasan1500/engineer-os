@@ -1,5 +1,7 @@
-# Engineer OS v1.1
+# Engineer OS v1.2
 
-Mobile UX & Learning Analytics release.
+Deep Curriculum / Glossary / Offline Foundation release.
 
-Start with `README-v1.1.md`. Existing v1.0 users should run `sql/v1.1_mobile_analytics.sql` once, then deploy this code.
+Start with `README-v1.2.md` and `V1.2-CHECKLIST.md`.
+
+Existing v1.1 users should run `sql/v1.2_levels_glossary_offline.sql`, then run `npm.cmd run content:sync` before using the expanded curriculum.

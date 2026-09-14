@@ -16,6 +16,8 @@ type Unit = {
   objectives: string[] | null
   key_points: string[] | null
   sort_order: number
+  level?: number
+  level_label?: string | null
 }
 
 type Question = {
@@ -24,6 +26,20 @@ type Question = {
   choices: string[] | null
   correct_answer: string
   explanation: string | null
+  why_correct?: string | null
+  why_others_wrong?: Record<string,string> | null
+  related_knowledge?: string | null
+  practical_use?: string | null
+  exam_traps?: string | null
+}
+
+
+type GlossaryTerm = {
+  id: number
+  term: string
+  definition: string
+  aliases: string[] | null
+  level: number
 }
 
 type QuestionStat = {
@@ -58,7 +74,11 @@ type Draft = {
   updated_at: string
 }
 
-const QUIZ_SIZE = 5
+const QUIZ_SIZE_BY_LEVEL: Record<number, number> = { 1: 10, 2: 12, 3: 15, 4: 18, 5: 20 }
+
+function quizSizeForLevel(level?: number) {
+  return QUIZ_SIZE_BY_LEVEL[level ?? 1] ?? 12
+}
 const HEARTBEAT_SECONDS = 15
 
 function shuffleArray<T>(items: T[]): T[] {
@@ -70,7 +90,7 @@ function shuffleArray<T>(items: T[]): T[] {
   return result
 }
 
-function prepareQuestions(questionBank: Question[], stats: Map<number, QuestionStat>): Question[] {
+function prepareQuestions(questionBank: Question[], stats: Map<number, QuestionStat>, quizSize: number): Question[] {
   const now = Date.now()
   const ranked = questionBank.map(question => {
     const stat = stats.get(question.id)
@@ -86,7 +106,7 @@ function prepareQuestions(questionBank: Question[], stats: Map<number, QuestionS
   ranked.sort((a, b) => a.dueRank - b.dueRank || a.mastery - b.mastery || a.random - b.random)
 
   return ranked
-    .slice(0, Math.min(QUIZ_SIZE, ranked.length))
+    .slice(0, Math.min(quizSize, ranked.length))
     .map(({ question }) => ({
       ...question,
       choices: question.choices ? shuffleArray(question.choices) : null,
@@ -109,17 +129,29 @@ function nextReviewIso(streak: number, correct: boolean) {
   return next.toISOString()
 }
 
-function LessonBody({ text }: { text: string | null }) {
+function LessonBody({ text, terms, onTerm }: { text: string | null; terms: GlossaryTerm[]; onTerm: (term: GlossaryTerm) => void }) {
   if (!text) return <p>教材本文はまだ準備中です。</p>
+  const candidates = [...terms].sort((a,b)=>b.term.length-a.term.length)
+  const renderInline = (line: string, keyPrefix: string) => {
+    if (!candidates.length) return line
+    const escaped = candidates.map(t => t.term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    const regex = new RegExp(`(${escaped.join('|')})`, 'g')
+    const map = new Map<string, GlossaryTerm>()
+    candidates.forEach(t => map.set(t.term, t))
+    return line.split(regex).map((part, i) => {
+      const term = map.get(part)
+      return term ? <button type="button" className="glossaryInline" key={`${keyPrefix}-${i}`} onClick={() => onTerm(term)}>{part}</button> : <span key={`${keyPrefix}-${i}`}>{part}</span>
+    })
+  }
   return (
     <div className="lessonBody">
       {text.split('\n').map((line, index) => {
         const trimmed = line.trim()
         if (!trimmed) return <div className="lessonSpacer" key={index} />
-        if (trimmed.startsWith('## ')) return <h3 key={index}>{trimmed.slice(3)}</h3>
-        if (trimmed.startsWith('# ')) return <h2 key={index}>{trimmed.slice(2)}</h2>
-        if (trimmed.startsWith('- ')) return <p className="bulletLine" key={index}>• {trimmed.slice(2)}</p>
-        return <p key={index}>{line}</p>
+        if (trimmed.startsWith('## ')) return <h3 key={index}>{renderInline(trimmed.slice(3), `h3-${index}`)}</h3>
+        if (trimmed.startsWith('# ')) return <h2 key={index}>{renderInline(trimmed.slice(2), `h2-${index}`)}</h2>
+        if (trimmed.startsWith('- ')) return <p className="bulletLine" key={index}>• {renderInline(trimmed.slice(2), `b-${index}`)}</p>
+        return <p key={index}>{renderInline(line, `p-${index}`)}</p>
       })}
     </div>
   )
@@ -130,6 +162,8 @@ export default function LearningPage() {
   const slug = params.slug as string
   const [unit, setUnit] = useState<Unit | null>(null)
   const [questionBank, setQuestionBank] = useState<Question[]>([])
+  const [glossaryTerms, setGlossaryTerms] = useState<GlossaryTerm[]>([])
+  const [selectedTerm, setSelectedTerm] = useState<GlossaryTerm | null>(null)
   const [questions, setQuestions] = useState<Question[]>([])
   const [questionStats, setQuestionStats] = useState<Map<number, QuestionStat>>(new Map())
   const [answers, setAnswers] = useState<Record<number, string>>({})
@@ -181,6 +215,12 @@ export default function LearningPage() {
 
       const bank = (questionData ?? []) as Question[]
       setQuestionBank(bank)
+      const { data: glossaryData } = await supabase
+        .from('glossary_terms')
+        .select('id,term,definition,aliases,level')
+        .eq('skill_id', unitData.skill_id)
+        .order('term')
+      setGlossaryTerms((glossaryData ?? []) as GlossaryTerm[])
 
       let statsMap = new Map<number, QuestionStat>()
       let draft: Draft | null = null
@@ -208,10 +248,16 @@ export default function LearningPage() {
         setRetention(progressData?.retention_score ?? 0)
         draft = draftData ?? null
       }
+      if (!draft && typeof window !== 'undefined') {
+        try {
+          const local = window.localStorage.getItem(`engineer-os:draft:${unitData.id}`)
+          if (local) draft = JSON.parse(local) as Draft
+        } catch { /* ignore malformed local draft */ }
+      }
       setQuestionStats(statsMap)
 
       const restoredQuestions = draft?.question_ids?.length ? restoreQuestions(bank, draft.question_ids) : null
-      const prepared = restoredQuestions ?? prepareQuestions(bank, statsMap)
+      const prepared = restoredQuestions ?? prepareQuestions(bank, statsMap, quizSizeForLevel((unitData as Unit).level))
       setQuestions(prepared)
 
       if (draft && new Date(draft.updated_at).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000) {
@@ -281,14 +327,16 @@ export default function LearningPage() {
     const saveDraft = async () => {
       if (submittedRef.current) return
       setDraftStatus('saving')
-      await supabase.from('user_learning_drafts').upsert({
-        user_id: user.id,
-        unit_id: unit.id,
+      const payload = {
         scroll_y: scrollYRef.current,
         answers: answersRef.current,
         question_ids: questionsRef.current.map(question => question.id),
         updated_at: new Date().toISOString(),
-      }, { onConflict: 'user_id,unit_id' })
+      }
+      try { window.localStorage.setItem(`engineer-os:draft:${unit.id}`, JSON.stringify(payload)) } catch { /* storage full/private mode */ }
+      if (navigator.onLine) {
+        await supabase.from('user_learning_drafts').upsert({ user_id: user.id, unit_id: unit.id, ...payload }, { onConflict: 'user_id,unit_id' })
+      }
       setDraftStatus('saved')
     }
 
@@ -367,6 +415,16 @@ export default function LearningPage() {
     setSaveMessage('')
     if (!unit || !user || questions.length === 0) {
       if (!user) setSaveMessage('ログインすると、この結果・定着度・復習予定を保存できます。')
+      return
+    }
+    if (!navigator.onLine) {
+      try {
+        window.localStorage.setItem(`engineer-os:pending-quiz:${unit.id}`, JSON.stringify({
+          unit_id: unit.id, slug: unit.slug, answers, question_ids: questions.map(q=>q.id), score,
+          created_at: new Date().toISOString()
+        }))
+      } catch { /* ignore */ }
+      setSaveMessage(`オフライン採点: ${score}点。回答は端末に保存しました。オンライン復帰後にこの単元を開いて再保存してください。`)
       return
     }
 
@@ -448,6 +506,7 @@ export default function LearningPage() {
       setQuestionStats(updatedStats)
       setRetention(bankMastery)
       await supabase.from('user_learning_drafts').delete().eq('user_id', user.id).eq('unit_id', unit.id)
+      try { window.localStorage.removeItem(`engineer-os:draft:${unit.id}`); window.localStorage.removeItem(`engineer-os:pending-quiz:${unit.id}`) } catch { /* ignore */ }
       setDraftStatus('idle')
       setSaveMessage(
         completedNow
@@ -464,8 +523,23 @@ export default function LearningPage() {
     setSubmitted(false)
     setSaveMessage('')
     setResumeMessage('')
-    setQuestions(prepareQuestions(questionBank, questionStats))
+    setQuestions(prepareQuestions(questionBank, questionStats, quizSizeForLevel(unit?.level)))
     window.scrollTo({ top: document.body.scrollHeight * 0.58, behavior: 'smooth' })
+  }
+
+  const openGlossary = async (term: GlossaryTerm) => {
+    setSelectedTerm(term)
+    if (!user || !unit) return
+    const { data: existing } = await supabase.from('user_glossary_library').select('lookup_count,familiarity').eq('user_id', user.id).eq('term_id', term.id).maybeSingle<{lookup_count:number; familiarity:number}>()
+    await supabase.from('user_glossary_library').upsert({
+      user_id: user.id,
+      term_id: term.id,
+      lookup_count: (existing?.lookup_count ?? 0) + 1,
+      familiarity: existing?.familiarity ?? 0,
+      last_viewed_at: new Date().toISOString(),
+      source_unit_id: unit.id,
+      next_review_at: new Date(Date.now() + 2*24*60*60*1000).toISOString(),
+    }, { onConflict: 'user_id,term_id' })
   }
 
   if (loading) return <main className="pageShell narrow">Loading...</main>
@@ -500,7 +574,7 @@ export default function LearningPage() {
 
       {resumeMessage && <div className="resumeNotice">↻ {resumeMessage}</div>}
 
-      <h1>{unit.title}</h1>
+      <div className="levelHeading"><span>{unit.level_label ?? `L${unit.level ?? 1}`}</span><h1>{unit.title}</h1></div>
       {unit.description && <p className="leadText">{unit.description}</p>}
 
       <section className="learningSection">
@@ -510,7 +584,7 @@ export default function LearningPage() {
 
       <section className="learningSection">
         <h2>講義</h2>
-        <LessonBody text={unit.lesson_body} />
+        <LessonBody text={unit.lesson_body} terms={glossaryTerms} onTerm={openGlossary} />
       </section>
 
       <section className="learningSection panel keyPanel">
@@ -522,7 +596,7 @@ export default function LearningPage() {
         <div className="quizTitleRow">
           <div>
             <h2>確認テスト</h2>
-            <p className="mutedText">弱点・復習期限を優先し、問題バンクから最大{QUIZ_SIZE}問を出題。問題順・選択肢順は毎回変わります。</p>
+            <p className="mutedText">弱点・復習期限を優先し、{questionBank.length}問の問題バンクから最大{quizSizeForLevel(unit?.level)}問を出題。問題順・選択肢順は毎回変わります。</p>
           </div>
           <span className="quizBadge">SMART REVIEW</span>
         </div>
@@ -553,6 +627,13 @@ export default function LearningPage() {
                 <div className={answers[question.id] === question.correct_answer ? 'feedback correct' : 'feedback wrong'}>
                   <b>{answers[question.id] === question.correct_answer ? '✅ 正解' : `❌ 不正解　正解：${question.correct_answer}`}</b>
                   <p>{question.explanation}</p>
+                  <div className="explanationDeepDive">
+                    {question.why_correct && <div><strong>なぜ正しい？</strong><p>{question.why_correct}</p></div>}
+                    {question.why_others_wrong && Object.keys(question.why_others_wrong).length > 0 && <div><strong>他の選択肢はなぜ違う？</strong>{Object.entries(question.why_others_wrong).map(([choice,reason])=><p key={choice}><b>{choice}</b> — {reason}</p>)}</div>}
+                    {question.related_knowledge && <div><strong>関連知識</strong><p>{question.related_knowledge}</p></div>}
+                    {question.practical_use && <div><strong>実務では</strong><p>{question.practical_use}</p></div>}
+                    {question.exam_traps && <div><strong>試験・面接の注意</strong><p>{question.exam_traps}</p></div>}
+                  </div>
                 </div>
               )}
             </article>
@@ -577,6 +658,13 @@ export default function LearningPage() {
           </div>
         )}
       </section>
+      {selectedTerm && <div className="glossaryModalBackdrop" onClick={() => setSelectedTerm(null)}>
+        <aside className="glossaryModal panel" onClick={e => e.stopPropagation()}>
+          <div className="glossaryModalTop"><div><span className="eyebrow">TERM LIBRARY</span><h2>{selectedTerm.term}</h2></div><button onClick={() => setSelectedTerm(null)}>×</button></div>
+          <p>{selectedTerm.definition}</p>
+          <small>タップ履歴は用語ライブラリへ保存され、弱点傾向と復習候補に利用されます。</small>
+        </aside>
+      </div>}
     </main>
   )
 }

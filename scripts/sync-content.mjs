@@ -41,6 +41,7 @@ const pack = JSON.parse(await fs.readFile(packPath, 'utf8'))
 
 let unitCount = 0
 let questionCount = 0
+let glossaryCount = 0
 
 for (const skill of pack.skills ?? []) {
   const { data: skillRow, error: skillErr } = await supabase
@@ -52,6 +53,8 @@ for (const skill of pack.skills ?? []) {
       description: skill.description ?? null,
       sort_order: skill.sort_order ?? 0,
       is_active: true,
+      prerequisite_slugs: skill.prerequisite_slugs ?? [],
+      level_count: skill.level_count ?? 5,
     }, { onConflict: 'slug' })
     .select('id')
     .single()
@@ -73,56 +76,69 @@ for (const skill of pack.skills ?? []) {
         sort_order: unit.sort_order ?? 0,
         is_active: true,
         content_version: pack.version,
+        level: unit.level ?? 1,
+        level_label: unit.level_label ?? null,
+        track: unit.track ?? skill.slug,
+        competency_tags: unit.competency_tags ?? [],
+        source_refs: unit.source_refs ?? [],
       }, { onConflict: 'slug' })
       .select('id')
       .single()
     if (unitErr) throw unitErr
     unitCount += 1
 
-    for (const question of unit.questions ?? []) {
-      const payload = {
-        content_key: question.content_key,
-        unit_id: unitRow.id,
-        question_type: question.question_type ?? 'multiple_choice',
-        prompt: question.prompt,
-        choices: question.choices ?? null,
-        correct_answer: question.correct_answer,
-        explanation: question.explanation ?? null,
-        difficulty: question.difficulty ?? 1,
-        tags: question.tags ?? [],
-      }
+    const questionPayloads = (unit.questions ?? []).map(question => ({
+      content_key: question.content_key,
+      unit_id: unitRow.id,
+      question_type: question.question_type ?? 'multiple_choice',
+      prompt: question.prompt,
+      choices: question.choices ?? null,
+      correct_answer: question.correct_answer,
+      explanation: question.explanation ?? null,
+      difficulty: question.difficulty ?? 1,
+      tags: question.tags ?? [],
+      why_correct: question.why_correct ?? null,
+      why_others_wrong: question.why_others_wrong ?? {},
+      related_knowledge: question.related_knowledge ?? null,
+      practical_use: question.practical_use ?? null,
+      exam_traps: question.exam_traps ?? null,
+    }))
 
-      // Preserve existing attempt/mastery history when an old manually-added
-      // question has the same prompt but does not yet have a content_key.
-      const { data: existingPrompt } = await supabase
+    // v2.0: sync large question banks in batches. Upsert by content_key preserves
+    // existing question ids/history while making 5k+ question packs practical.
+    const BATCH_SIZE = 200
+    for (let offset = 0; offset < questionPayloads.length; offset += BATCH_SIZE) {
+      const batch = questionPayloads.slice(offset, offset + BATCH_SIZE)
+      const { error: qErr } = await supabase
         .from('quiz_questions')
-        .select('id,content_key')
-        .eq('unit_id', unitRow.id)
-        .eq('prompt', question.prompt)
-        .maybeSingle()
-
-      let qErr
-      if (existingPrompt?.id && !existingPrompt.content_key) {
-        const result = await supabase
-          .from('quiz_questions')
-          .update(payload)
-          .eq('id', existingPrompt.id)
-        qErr = result.error
-      } else {
-        const result = await supabase
-          .from('quiz_questions')
-          .upsert(payload, { onConflict: 'content_key' })
-        qErr = result.error
-      }
-
+        .upsert(batch, { onConflict: 'content_key' })
       if (qErr) throw qErr
-      questionCount += 1
+      questionCount += batch.length
     }
+
   }
+}
+
+
+// Sync glossary terms after curriculum so skill ids are available.
+for (const term of pack.glossary_terms ?? []) {
+  const { data: skillRow } = await supabase.from('skills').select('id').eq('slug', term.skill_slug).maybeSingle()
+  const { error } = await supabase.from('glossary_terms').upsert({
+    term: term.term,
+    definition: term.definition,
+    skill_id: skillRow?.id ?? null,
+    aliases: term.aliases ?? [],
+    level: term.level ?? 1,
+    related_terms: term.related_terms ?? [],
+    content_version: pack.version,
+  }, { onConflict: 'term' })
+  if (error) throw error
+  glossaryCount += 1
 }
 
 console.log(`\n✅ Engineer OS content sync complete`)
 console.log(`   Pack: ${pack.version}`)
 console.log(`   Units synced: ${unitCount}`)
 console.log(`   Questions synced: ${questionCount}`)
+console.log(`   Glossary terms synced: ${glossaryCount}`)
 console.log('   No manual SQL entry is needed for these lessons/questions.\n')
